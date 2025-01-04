@@ -14,7 +14,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private val settingsFile by lazy { File(filesDir, "settings.txt") }
     private val defaultMaxFile = 1000
-    private val defaultButtonList = "Traffic Light, Dangerous, Slow, Violation"
+    private val defaultButtonList = "Traffic Light, Dangerous, Crawling, Violation"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

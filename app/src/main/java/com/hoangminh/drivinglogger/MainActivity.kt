@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var maxLogFiles = 1000
     private lateinit var buttonContainer: LinearLayout
     private val defaultMaxFile = 1000
-    private val defaultButtonList = "Traffic Light, Dangerous, Slow, Violation"
+    private val defaultButtonList = "Traffic Light, Dangerous, Crawling, Violation"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
