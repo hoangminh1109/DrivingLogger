@@ -6,47 +6,12 @@
 
     <!-- Vertical button layout -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_gravity="start"
-        android:padding="8dp">
-
-        <Button
-            android:id="@+id/buttonTrafficLight"
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Traffic Light" />
-
-        <Button
-            android:id="@+id/buttonDangerous"
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Dangerous" />
-
-        <Button
-            android:id="@+id/buttonCrawling"
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Crawling" />
-
-        <Button
-            android:id="@+id/buttonViolation"
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Violation" />
-
-        <Button
-            android:id="@+id/buttonOther"
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Other" />
-    </LinearLayout>
+        android:padding="8dp" />
 
     <!-- RecyclerView to the right -->
     <androidx.recyclerview.widget.RecyclerView

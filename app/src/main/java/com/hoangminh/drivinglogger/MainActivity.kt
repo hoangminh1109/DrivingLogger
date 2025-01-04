@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import android.util.Log
+import android.view.Gravity
 import android.widget.Toast
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +30,10 @@ class MainActivity : AppCompatActivity() {
     private val logEntries = mutableListOf<String>()
     private lateinit var adapter: LogAdapter
     private val settingsFile by lazy { File(filesDir, "settings.txt") }
-    private var maxLogFiles = 1000 // Default value
+    private var maxLogFiles = 1000
+    private lateinit var buttonContainer: LinearLayout
+    private val defaultMaxFile = 1000
+    private val defaultButtonList = "Traffic Light, Dangerous, Slow, Violation"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,38 +45,14 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // Initialize or read settings
-        if (!settingsFile.exists()) {
-            settingsFile.writeText(maxLogFiles.toString()) // Write default value
-        } else {
-            val fileContent = settingsFile.readText().toIntOrNull()
-            if (fileContent == null) {
-                settingsFile.writeText(maxLogFiles.toString()) // Write default value if content is invalid
-            } else {
-                maxLogFiles = fileContent // Use valid value from file
-            }
-        }
+        // Load settings
+        val settings = loadSettings()
 
-        findViewById<Button>(R.id.buttonTrafficLight).setOnClickListener {
-            logTimeAndLocation("Traffic Light")
-        }
+        val buttonList = settings.optString("buttonList", defaultButtonList)
+        buttonContainer = findViewById(R.id.buttonContainer)
+        createButtons(buttonList)
 
-        findViewById<Button>(R.id.buttonDangerous).setOnClickListener {
-            logTimeAndLocation("Dangerous")
-        }
-
-        findViewById<Button>(R.id.buttonCrawling).setOnClickListener {
-            logTimeAndLocation("Crawling")
-        }
-
-        findViewById<Button>(R.id.buttonViolation).setOnClickListener {
-            logTimeAndLocation("Violation")
-        }
-
-        findViewById<Button>(R.id.buttonOther).setOnClickListener {
-            logTimeAndLocation("Other")
-        }
-
+        maxLogFiles = settings.optInt("maxFiles", defaultMaxFile)
         loadLogs()
     }
 
@@ -121,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
             // Add the new entry to the top of the file
             logs.add(0, logEntry) // Add the new entry at the start
-            if (logs.size > maxLogFiles * 3) { // Each entry is 2 lines
+            if (logs.size > maxLogFiles * 3) { // Each entry is 3 lines
                 logs.removeAt(logs.size - 1) // Remove the oldest entry (line 3 of the oldest log)
                 logs.removeAt(logs.size - 1) // Remove the oldest entry (line 2 of the oldest log)
                 logs.removeAt(logs.size - 1) // Remove the oldest entry (line 1 of the oldest log)
@@ -193,6 +175,62 @@ class MainActivity : AppCompatActivity() {
     private fun isValidLocation(location: String): Boolean {
         val regex = """-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?""".toRegex() // Matches latitude, longitude
         return location.matches(regex)
+    }
+
+    private fun loadSettings(): JSONObject {
+        val defaultSettings = JSONObject().apply {
+            put("maxFiles", defaultMaxFile)
+            put("buttonList", defaultButtonList)
+        }
+        return if (settingsFile.exists()) {
+            try {
+                JSONObject(settingsFile.readText())
+            } catch (e: Exception) {
+                settingsFile.writeText(defaultSettings.toString())
+                JSONObject(settingsFile.readText())
+            }
+        } else {
+            settingsFile.writeText(defaultSettings.toString())
+            JSONObject(settingsFile.readText())
+        }
+    }
+    private fun createButtons(buttonList: String) {
+        buttonContainer.removeAllViews()
+
+        // Split the button list into individual button texts
+        val buttons = buttonList.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
+        // Create buttons dynamically
+        for (buttonText in buttons) {
+            val button = Button(this).apply {
+                text = buttonText
+                layoutParams = LinearLayout.LayoutParams(
+                    resources.getDimensionPixelSize(R.dimen.button_width),
+                    resources.getDimensionPixelSize(R.dimen.button_height),
+                    1f
+                )
+                gravity = Gravity.CENTER
+                setOnClickListener {
+                    logTimeAndLocation(buttonText) // Pass the button text to the log function
+                }
+            }
+            buttonContainer.addView(button)
+        }
+
+        // Add the fixed "Other" button
+        val otherButton = Button(this).apply {
+            text = "Other"
+            layoutParams = LinearLayout.LayoutParams(
+                resources.getDimensionPixelSize(R.dimen.button_width),
+                resources.getDimensionPixelSize(R.dimen.button_height),
+                1f
+            )
+            gravity = Gravity.CENTER
+            setOnClickListener {
+                logTimeAndLocation()
+            }
+        }
+        buttonContainer.addView(otherButton)
     }
 
 }
