@@ -1,0 +1,47 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="end"
+    android:padding="8dp">
+
+    <!-- Column 2: Timestamp and Location -->
+    <LinearLayout
+        android:layout_width="500dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="end|center_vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/timestampTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end|center_vertical"
+            android:text="Timestamp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end|center_vertical"
+            android:text="Location"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+
+    <!-- Column 1: Log Type -->
+    <TextView
+        android:id="@+id/logtypeTextView"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Log Type"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:layout_marginEnd="8dp" />
+
+</LinearLayout>
